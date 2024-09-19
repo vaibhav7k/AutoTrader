@@ -1,0 +1,14 @@
+jupyter
+nbconvert
+papermill
+numpy
+pandas
+xgboost
+lightgbm
+catboost
+scikit-learn
+tensorflow
+transformers
+joblib
+matplotlib
+fyers-apiv3
