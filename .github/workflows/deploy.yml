@@ -1,0 +1,36 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Install AWS CLI and Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli docker.io
+        
+      - name: Build Docker image
+        run: |
+          docker build -t lambda-function .
+
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin lambda-function
+
+      - name: Push Docker image to AWS ECR
+        run: |
+          docker tag lambda-function:latest lambda-function:latest
+          docker push <your-ECR-repository>:latest
+
+      - name: Deploy to Lambda
+        run: |
+          aws lambda update-function-code --function-name auto_trader --image-uri lambda-function:latest
